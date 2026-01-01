@@ -1,55 +1,47 @@
-# Projekt-spezifische Cursor Rules
+# frontend.mojo - Cursor Rules
 
-## Projekt-Kontext
-Dieses Projekt ist ein Headless WordPress Setup für mojo-institut.de.
+## ⚠️ PFLICHT: Platform Standards
 
-## Architektur
-- **WordPress**: Backend (REST API) - Container: `frontend-mojo-wordpress`
-- **Next.js Frontend**: Frontend-App - Container: `frontend-mojo-app`
-- **MySQL**: Datenbank - Container: `frontend-mojo-db`
-- **Traefik**: Serverseitiges Routing (automatisch über Docker Labels)
+Dieses Projekt MUSS sich an die Standards in `platform.mojo` halten:
 
-## Port-Konfiguration
-- Frontend-Port: 46500 (siehe docs/PORT.md)
-- WordPress-Port: 46501 (intern)
-- MySQL-Port: 3306 (intern)
+- **Ökosystem:** /root/projects/platform.mojo/docs/MOJO_ECOSYSTEM.md
+- **Coding Standards:** /root/projects/platform.mojo/docs/CODING_STANDARDS.md
+- **Staging Konvention:** /root/projects/platform.mojo/docs/STAGING_SERVER_CONVENTION.md
+- **Lokale Entwicklung:** /root/projects/platform.mojo/docs/LOCAL_DEVELOPMENT.md
+- **Brand Guidelines:** /root/projects/platform.mojo/docs/brand/
 
-## Docker-basiert
-- **KEIN PM2**: Alles läuft in Docker Containern
-- **docker-compose.yml**: Hauptkonfiguration
-- **Networks**: `mojo-frontend-network` (extern)
+## URLs
 
-## Code-Standards
-- Frontend: TypeScript, Next.js 14 (App Router), React 18
-- WordPress: Standard WordPress mit REST API
-- Docker: Multi-Stage Builds für optimale Image-Größe
+- **Staging:** https://frontend.staging.mojo-institut.de
+- **Production:** https://frontend.mojo-institut.de
 
-## Entwicklung
-- Frontend-Entwicklung: `cd frontend && npm run dev`
-- Docker-Entwicklung: `docker-compose up -d`
-- Logs: `docker-compose logs -f [service]`
+## Code-Prinzipien
 
-## Deployment
-- Projekt wird automatisch über CI/CD deployed
-- Traefik erkennt Services automatisch über Docker Labels
-- Siehe .github/workflows/ci-cd.yml
+- TypeScript ES6+ mit striktem Typing
+- DRY - Keine Code-Duplikation
+- Einfachheit vor Komplexität
+- Health Check Endpoint ist PFLICHT (`/health`)
 
-## Wichtige Dateien
-- `docker-compose.yml`: Container-Konfiguration
-- `frontend/Dockerfile`: Frontend Build
-- `frontend/src/app/page.tsx`: Hauptseite
-- `frontend/src/lib/wordpress.ts`: WordPress API Client
-- `.env`: Umgebungsvariablen (nicht committen!)
+## Design System
 
-## WordPress REST API
-- Endpoint: `/wp-json/wp/v2`
-- Hauptseite: `/wp-json/wp/v2/pages?per_page=1&orderby=menu_order&order=asc`
-- Frontend nutzt: `fetchWordPressPage()` aus `src/lib/wordpress.ts`
+- `@gkeferstein/design` Package verwenden
+- MOJO-Terminologie beachten (siehe MOJO_GLOSSARY.md)
+- Voice & Tone Guidelines befolgen
 
-## Traefik Labels
-- Frontend Router: `Host(dev.frontend.mojo-institut.de)`
-- WordPress API Router: `Host(dev.frontend.mojo-institut.de) && PathPrefix(/wp-json)`
-- Entrypoints: `websecure` (HTTPS)
-- TLS: Let's Encrypt (`letsencrypt` resolver)
+## CI/CD
 
+- Push zu `main` → Staging Deployment
+- Release Tag `v*.*.*` → Production Deployment
+- Feature Branches → CI ohne Deployment (ci-pr.yml)
 
+## GitHub Secrets (PFLICHT!)
+
+- `STAGING_SERVER` - Staging Server
+- `STAGING_SSH_KEY` - SSH Key für Staging
+- `PRODUCTION_SERVER` - Production Server
+- `PRODUCTION_SSH_KEY` - SSH Key für Production
+- `GHCR_TOKEN` - GitHub Container Registry
+
+## Referenzen
+
+Repository: https://github.com/gkeferstein/platform.mojo
